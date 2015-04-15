@@ -1,0 +1,7 @@
+main
+timetable
+*.o
+*.txt
+*.dat
+.*
+!.gitignore
