@@ -8,19 +8,25 @@
 
 int main(int argc, char **argv)
 {
+	const char *file_name; /* имя файла */
 	TabPtr tab, /* указатель на расписание */
 		tmp_tab; /* временный указатель на расписание */
 	/* Пробуем загрузить файл переданый аргументом коммандной строки
 	 * или файл по умолчанию */
-	if(argc > 1) tab = read_table(make_file_name(argv[1]));
-	else tab = read_table("timetable.dat");
+	if(argc > 1) {
+		file_name = make_file_name(argv[1]);
+	} else {
+		file_name = make_file_name("timetable");
+	}
+	tab = read_table(file_name);
 	/* если неудалось, то создаем пустое расписание*/
 	if(tab == NULL) {
-		printf("\nОшибка при загрузке файла.");
+		printf("\nОшибка при загрузке файла: %s.\n", file_name);
 		tab = new_timetable(0);
+	} else {
+		printf("\nРасписание загружено из файла: %s\n", file_name);
 	}
 	char choise; /* переменная выбора меню */
-	const char *file_name; /* имя файла */
 	/* основной цыкл программы */
 	do {
 		show_menu();
@@ -74,10 +80,11 @@ int main(int argc, char **argv)
 					show_table(tab, stdout);
 					FILE *f = fopen("timetable.txt", "w");
 					if(f == NULL) {
-						perror("\nОшибка открытия файла");
+						perror("\nОшибка открытия файла timetable.txt");
 						return 1;
 					} else {
 						show_table(tab, f);
+						printf("\nРасписание выведено в файл timetable.txt\n");
 						fclose(f);
 					}
 				}
@@ -124,6 +131,7 @@ int main(int argc, char **argv)
 						} else {
 							show_table(tmp_tab, f);
 							fclose(f);
+							printf("\nВывод сохранен в файл: %s\n", name);
 						}
 						free_timetable(tmp_tab);
 					} else {
